@@ -3,9 +3,10 @@ import random
 BOARD_SIZE = 10
 
 class Snake:
-    def __init__(self, name, emoji):
+    def __init__(self, name, emoji, kingdom):
         self.name = name
         self.emoji = emoji
+        self.kingdom = kingdom
         self.body = [(random.randint(0, BOARD_SIZE - 1), random.randint(0, BOARD_SIZE - 1))]
         self.direction = random.choice(["UP", "DOWN", "LEFT", "RIGHT"])
         self.alive = True
@@ -16,14 +17,12 @@ class Snake:
             return
         head_x, head_y = self.body[0]
         dx, dy = {
-            "UP": (0, -1),
-            "DOWN": (0, 1),
-            "LEFT": (-1, 0),
-            "RIGHT": (1, 0)
+            "UP": (0, -1), "DOWN": (0, 1),
+            "LEFT": (-1, 0), "RIGHT": (1, 0)
         }[self.direction]
         new_head = (head_x + dx, head_y + dy)
 
-        # Check bounds and collisions
+        # Collision or wall check
         if not (0 <= new_head[0] < BOARD_SIZE and 0 <= new_head[1] < BOARD_SIZE):
             self.alive = False
             return
@@ -47,7 +46,8 @@ def create_board(snakes):
     return board
 
 def get_winner(snakes):
-    alive_snakes = [s for s in snakes if s.alive]
-    if len(alive_snakes) == 1:
-        return alive_snakes[0]
-    return None
+    alive = [s for s in snakes if s.alive]
+    return alive[0] if len(alive) == 1 else None
+
+       
+    
