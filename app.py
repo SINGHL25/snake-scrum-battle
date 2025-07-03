@@ -8,7 +8,7 @@ if "snakes" not in st.session_state:
     st.session_state.snakes = [Snake(f"Snake {i+1}") for i in range(6)]
 
 st.title("🐍 Snake Scrum Battle 🐍")
-st.image("assets/snake1.png", width=100)
+st.image("assets/snake1.png,snake2.png,snake3.png,snake4.png,snake5.png,snake6.png,snake7.png", width=100)
 st.write("Six snakes enter the battle... only one survives!")
 
 if st.button("Start Game"):
@@ -18,7 +18,7 @@ if st.button("Start Game"):
         winner = get_winner(st.session_state.snakes)
         if winner:
             st.success(f"🏆 Winner: {winner} 🏆")
-            st.audio("assets/crowd_cheer.mp3")
+           
             break
         time.sleep(0.3)
     else:
