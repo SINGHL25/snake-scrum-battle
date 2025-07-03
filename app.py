@@ -1,25 +1,29 @@
 import streamlit as st
-import random
 import time
+from game_logic import Snake, get_winner
 
-st.set_page_config(page_title="Snake Scrum Battle", layout="wide")
-st.title("🐍 Snake Scrum Battle Arena")
+st.set_page_config(page_title="Snake Scrum Battle", layout="centered")
 
-snake_names = ["ViperX", "CobraKai", "Fangzilla", "Venomatrix", "Serpento", "SlitherKing", "Pythonara"]
-players = st.multiselect("Select Snakes (Players)", snake_names, default=snake_names[:6])
+if "snakes" not in st.session_state:
+    st.session_state.snakes = [Snake(f"Snake {i+1}") for i in range(6)]
 
-start_btn = st.button("Start Battle")
+st.title("🐍 Snake Scrum Battle 🐍")
+st.image("assets/snake1.png", width=100)
+st.write("Six snakes enter the battle... only one survives!")
 
-if start_btn and players:
-    st.subheader("Battle Started!")
-    leaderboard = {p: 0 for p in players}
-    with st.empty():
-        for i in range(30):
-            attacker = random.choice(players)
-            target = random.choice([p for p in players if p != attacker])
-            leaderboard[attacker] += 1
-            st.markdown(f"**{attacker}** engulfed **{target}**!")
-            time.sleep(0.3)
-        winner = max(leaderboard, key=leaderboard.get)
-        st.success(f"🏆 Winner is **{winner}**! They host tomorrow's scrum! 🎤")
-        st.balloons()
+if st.button("Start Game"):
+    for _ in range(30):
+        for snake in st.session_state.snakes:
+            snake.move()
+        winner = get_winner(st.session_state.snakes)
+        if winner:
+            st.success(f"🏆 Winner: {winner} 🏆")
+            st.audio("assets/crowd_cheer.mp3")
+            break
+        time.sleep(0.3)
+    else:
+        st.warning("It's a draw! Everyone is tired.")
+
+    st.subheader("Final Scores:")
+    for s in st.session_state.snakes:
+        st.write(f"{s.name}: {'Alive' if s.alive else 'Dead'} | Score: {s.score}")
