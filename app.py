@@ -8,7 +8,7 @@ if "snakes" not in st.session_state:
     st.session_state.snakes = [Snake(f"Snake {i+1}") for i in range(6)]
 
 st.title("🐍 Snake Scrum Battle 🐍")
-st.image_files = [
+image_files = [
     "assets/snake1.png",
     "assets/snake2.png",
     "assets/snake3.png",
