@@ -3,31 +3,35 @@ import time
 from game_logic import Snake, create_board, get_winner
 
 st.set_page_config(page_title="Snake Scrum Battle", layout="centered")
+st.title("🐍 Snake Scrum Battle - Kingdom Showdown")
+st.markdown("Let 6 custom snakes from different kingdoms battle for survival in 15 seconds!")
 
-if "snakes" not in st.session_state:
-    st.session_state.snakes = [
-        Snake("Alice", "🐍"),
-        Snake("Bob", "🐢"),
-        Snake("Clara", "🐉"),
-        Snake("Danny", "🦎"),
-        Snake("Eva", "🦂"),
-        Snake("Felix", "🦕"),
-    ]
+# Step 1: Input form
+if "snakes_created" not in st.session_state:
+    st.session_state.snakes_created = False
 
-if "running" not in st.session_state:
-    st.session_state.running = False
+if not st.session_state.snakes_created:
+    with st.form("snake_form"):
+        names, kingdoms = [], []
+        emojis = ["🐍", "🐢", "🐉", "🦎", "🦂", "🦕"]
+        for i in range(6):
+            name = st.text_input(f"Snake {i+1} Name", value=f"Snake{i+1}")
+            kingdom = st.text_input(f"Snake {i+1} Kingdom", value=f"Kingdom{i+1}")
+            names.append(name)
+            kingdoms.append(kingdom)
+        if st.form_submit_button("Let the Battle Begin!"):
+            st.session_state.snakes = [Snake(names[i], emojis[i], kingdoms[i]) for i in range(6)]
+            st.session_state.snakes_created = True
+            st.session_state.running = True
+            st.rerun()
 
-st.title("🐍 Snake Scrum Battle - Dynamic Emoji Edition")
-st.markdown("Let 6 brave snakes fight to the end. One winner survives! 🏆")
-
-if st.button("Start Battle"):
-    st.session_state.running = True
-
-if st.session_state.running:
+# Step 2: Game logic (15-second loop)
+if st.session_state.get("running", False):
     game_placeholder = st.empty()
     status_placeholder = st.empty()
 
-    for _ in range(50):
+    start_time = time.time()
+    while time.time() - start_time < 15:
         for snake in st.session_state.snakes:
             snake.update_direction()
             snake.move(create_board(st.session_state.snakes))
@@ -41,23 +45,18 @@ if st.session_state.running:
 
         winner = get_winner(st.session_state.snakes)
         if winner:
-            status_placeholder.success(f"🏆 Winner: {winner.name} {winner.emoji} with score {winner.score}")
+            status_placeholder.success(f"🏆 🎈 ⚡ Winner: {winner.name} from {winner.kingdom} {winner.emoji} | Score: {winner.score}")
             st.session_state.running = False
             break
         time.sleep(0.5)
 
     else:
-        status_placeholder.info("Game over. No single winner.")
+        status_placeholder.info("⏱️ Time's up! No single winner.")
         st.session_state.running = False
 
+# Step 3: Reset
 if st.button("Reset Game"):
-    st.session_state.snakes = [
-        Snake("Alice", "🐍"),
-        Snake("Bob", "🐢"),
-        Snake("Clara", "🐉"),
-        Snake("Danny", "🦎"),
-        Snake("Eva", "🦂"),
-        Snake("Felix", "🦕"),
-    ]
-    st.session_state.running = False
+    st.session_state.clear()
     st.rerun()
+
+
