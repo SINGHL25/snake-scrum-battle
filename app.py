@@ -8,7 +8,16 @@ if "snakes" not in st.session_state:
     st.session_state.snakes = [Snake(f"Snake {i+1}") for i in range(6)]
 
 st.title("🐍 Snake Scrum Battle 🐍")
-st.image("assets/snake1.png,snake2.png,snake3.png,snake4.png,snake5.png,snake6.png,snake7.png", width=100)
+st.image_files = [
+    "assets/snake1.png",
+    "assets/snake2.png",
+    "assets/snake3.png",
+    "assets/snake4.png",
+    "assets/snake5.png",
+    "assets/snake6.png"
+]
+st.image(image_files, width=100)
+
 st.write("Six snakes enter the battle... only one survives!")
 
 if st.button("Start Game"):
